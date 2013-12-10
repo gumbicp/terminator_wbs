@@ -38,7 +38,7 @@ function end
     echo
     echo -e "\t\tI hope so there is not error in this script, but ..."
     echo -e "\tIf You find it please let me know  --> pracacp@gmail.com"
-    echo -e "\tor issues  https://github.com/gumbicp/TERMINATOR_WBS.git"
+    echo -e "\tor issues  https://github.com/gumbicp/terminator_wbs.git"
     echo
     echo -e "\t\tThx in advance gumbicp"
     echo
@@ -57,7 +57,7 @@ function koniec
     echo
     echo -e "\t\tMam na dzieję że nie było błędów w działaniu programu."
     echo -e "\tJeżeli  tak  proszę  dać  mi  znać  na  --> pracacp@gmail.com"
-    echo -e "\tLub w issues na https://github.com/gumbicp/TERMINATOR_WBS.git"
+    echo -e "\tLub w issues na https://github.com/gumbicp/terminator_wbs.git"
     echo
     echo -e "\t\tPozd. gumbicp"
     echo
