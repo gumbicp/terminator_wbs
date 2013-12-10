@@ -32,6 +32,30 @@
 #                                                                       #
 #########################################################################
 
+#
+# Funkcja ustawia wersje jezykową programu np -en po angielsku
+# bez parametru wersja polska
+#
+function en_pl
+{
+	local arg1=$1
+	local arg2=$2
+	local arg3=$3
+	local args=("$arg1" "$arg2" "$arg3")
+	local len=${#args[*]}
+
+	language='-pl'
+	
+	for i in `seq 0 $[len -1]`
+	do
+		if [ "${args[$i]}" = "-en" ]
+		then
+			language="-en"
+		fi
+	done
+}
+# ustaw wersje jezykowa
+en_pl $@
 #--------- zmienne globalne ------------------
 . ./zmienne/zmienne.sh
 # ---------------- end zmienne ---------------
@@ -53,29 +77,11 @@
 #
 if [ $opcje = 0 ]
 then
-    while [ True ]
-    do
-	clear
-	if [ $bool_brak_t_op = True ]
-	then
-	    echo
-	    echo -e "\t\t $brak_t_op"
-	    echo
-	    bool_brak_t_op=False
-	fi
-	echo "$opis"
-	select option in ${tab_menu_start[@]}
-	do
-	    case $option in
-		"${tab_menu_start[0]}") func_install_dialog ;;
-		"${tab_menu_start[1]}") func_start ;;
-		"${tab_menu_start[$dl_tms -1]}") koniec ;;
-		    *) bool_brak_t_op=True
-	    esac
-	    break
-	done
-	echo -e "\n"
-    done
+    pentla_textowa
+elif [ $opcje -ge 1 ]
+then
+	sprawdz_opcje $@
+
 else
     func_start
 fi

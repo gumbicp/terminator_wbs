@@ -1,0 +1,15 @@
+Pierwszy krok to zmiana uprawnień plików na wykonywalne:
+
+$ chmod -v +x *.sh ./*/*.sh
+
+Drugi krok to pierwszy start skryptu bez opcji:
+
+$ ./teminator_for_wbs.sh  
+
+Dostepny opis opcji wywołania programu:
+
+$ ./teminator_for_wbs.sh -h
+
+Wersja po angielsku:
+
+$ ./teminator_for_wbs.sh -en 
