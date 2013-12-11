@@ -23,6 +23,13 @@
 # MA 02110-1301, USA.                                                   #
 #                                                                       #
 #########################################################################
+
+#pliki dla logow  bledow i do debugowania
+
+err_log='err_log.txt'
+debug_log="debug_log.txt"
+
+#-----------------------------------------------
 opcje=$#
 # dla menu tekstowego wersja polska
 if [ "$language" = "-pl" ]
