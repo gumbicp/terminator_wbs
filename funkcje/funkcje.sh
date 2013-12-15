@@ -105,8 +105,8 @@ function func_help
 	read -p "<enter> : ..."
 	func_koniec
 }
-###
-# Funckcja dla wybranej opcji 1 z Main Menu
+### --- dialog
+# Funckcja wybiera wszystkie paczki i instaluje z automatu
 ##
 function func_M1_op1
 {
@@ -122,32 +122,34 @@ case $? in
     echo "ESC pressed.";;
 esac
 }
-###
+### --- dialog
 # Funkcja dla wybranej opcji 2 z Main Menu
 # instaluj wybrane paczki
 ##
 function func_M1_op2
 {
-    echo "func_M1_op2 ->> przed oknem dialog --checklist" >&4
+    echo ":: func_M1_op2 ->> przed oknem dialog --checklist ::" >&4
 
     test -f tfile && rm tfile || > tfile && t_file="tfile"
    $DIALOG --backtitle "Ubuntu Lts 12.04 " --separate-output\
 	--title "$paczki" --clear \
         --checklist "$CHB1_info" 20 61 5 \
         "Ubuntu"  "ubuntu-restricted-extras" ON \
-        "Java7"    "No, that's not my dog." off \
-        "Orange" "Yeah, that's juicy." off \
-        "Chicken"    "Normally not a pet." off \
-        "Cat"    "No, never put a dog and a cat together!" off \
-        "Fish"   "Cats like fish." off \
-        "Lemon"  "You know how it tastes." off 2> $t_file
+        "Java7"  "openjdk-7-jdk"  off \
+        "Java6"  "openjdk-6-jdk"  off \
+        "Ant"    "Compiler for java"  off \
+        "Dkms"    "debhelper, cdbs, dkms"  off \
+        "Devscripts"  "And more to install"  off \
+        "Codecs"  "libavformat-extra* libavcodec-extra*" off 2> $t_file
 
 retval=$?
 
 case $retval in
   0)
     for choice in `cat $t_file`; do
-        echo "Wartosc = $choice" >&4
+        #debug
+        echo "f -> Wartosc = $choice" >&4
+        #end debug
         if [ "$choice" = "Ubuntu" ]; then
             func_ubuntu_restricted_extras
             read -p "<enter>" enter
@@ -158,11 +160,19 @@ case $retval in
     done
     ;;
   1)
-    echo "Cancel pressed.";;
+    echo "f --> Cancel pressed -> func_start" >&4
+    func_start
+    ;;
   255)
-    echo "ESC pressed.";;
+    echo "f --> ESC pressed. -> func_start" >&4
+    func_start
+    ;;
 esac
 }
+### --- dialog
+#   Funkcja informacyjna o programie netbeans
+#
+##
 function func_M1_op3
 {
 $DIALOG --title " Trzecia opcja" --clear \
@@ -177,7 +187,25 @@ case $? in
     echo "ESC pressed.";;
 esac
 }
-###
+### --- dialog
+#   Funkcja sprawdza wersje javy zainstalowanej
+# i alternatives dla niej
+##
+function func_M1_op4
+{
+$DIALOG --title " Czwarta opcja" --clear \
+        --yesno "wybrales czwarta opcje" 10 30
+
+case $? in
+  0)
+    echo "Yes chosen.";;
+  1)
+    echo "No chosen.";;
+  255)
+    echo "ESC pressed.";;
+esac
+}
+### --- dialog
 #   Funkcja otwiera okienko tak nie
 # pyta czy napewno wybor jest właściwy
 ##
@@ -188,39 +216,43 @@ function func_M_Menu_wybor
 
     case $? in
       0)
-            echo "func_M_Menu_wybor-> przed if '$1 = $M1_op1" >&4
+            echo ":: func_M_Menu_wybor-> przed if '$1 = $M1_op1 ::" >&4
            if [ "$1" = "$M1_op1" ]; then
-                echo "func_M_Menu_wybor-> if $1 = $M1_op1" >&4
+                echo "f --> if $1 = $M1_op1" >&4
                 func_M1_op1
            elif [ "$1" = "$M1_op2" ]; then
-                echo "func_M_Menu_wybor if $1 = $M1_op2" >&4
+                echo "f --> if $1 = $M1_op2" >&4
                 func_M1_op2
-           elif [ "$1" = "$M1_op3"]; then
-                echo "func_M_Menu_wybor if $1 = $M1_op3" >&4
+           elif [ "$1" = "$M1_op3" ]; then
+                echo "f --> if $1 = $M1_op3" >&4
                 func_M1_op3
+           elif [ "$1" = "$M1_op4" ]; then
+                echo "f --> if $1 = $M1_op4" >&4
+                func_M1_op4
 	        fi
 	   ;;
       1)
-        echo "func_M_Menu_wybor -> cancel -> func_start ...." >&4
+        echo "f --> cancel -> func_start ...." >&4
          func_start
         ;;
       255)
-        echo "func_M_Menu_wybor -> Esc -> func_start ...." >&4
+        echo "f --> Esc -> func_start ...." >&4
         func_start
         ;;
     esac
 }
-### 
+### --- dialog
 # Funkcja startuje Main Menu  dialog
 #
 ##
 function func_start
 {
     $DIALOG --clear --title "Menu" \
-	--menu "$czolowka_menu\n\n" 20 50 4 \
+	--menu "$czolowka_menu\n\n" 20 55 4 \
 	"$M1_op1" "$M1_opis_op1" \
 	"$M1_op2" "$M1_opis_op2" \
-    "$M1_op3" "$M1_opis_op3" 2> $t_file
+	"$M1_op3" "$M1_opis_op3" \
+    "$M1_op4" "$M1_opis_op4" 2> $t_file
 
    retval=$?
    choice=`cat $t_file`
@@ -243,7 +275,7 @@ function func_start
 
     func_koniec
 }
-###
+###--- dialog install
 # Funckja instaluje pakiet dialog
 # i startuje program
 #

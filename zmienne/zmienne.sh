@@ -77,12 +77,14 @@ VERSION
 	czolowka_menu="
   Witam , masz do wyboru pełną instalacje od zera
 lub doinstalowanie brakujacych pakietow."
-	M1_op1="Wszytko"
+	M1_op1="Całość"
 	M1_opis_op1="Wszystkie pakiety od zera" 
 	M1_op2="Wybrane"
 	M1_opis_op2="Tylko wybrane pakiety"
 	M1_op3="Netbeans"
 	M1_opis_op3="Program IDE do programowania w java"
+	M1_op4="Wersje"
+	M1_opis_op4="Sprawdz wersje java"
 	MYN1_info="Wybrales opcje "
 	MYN1_tytul="Jesteś tego pewny ?"
 	paczki="Lista paczek"
@@ -91,7 +93,7 @@ Jeżeli jest wiecej opcji na ekranie, można ją \n\
 przesuwać w dół używając klawiszy UP/DOWN lub\n\
 strzałek , pierwsza litera jest tak zwanym \n\
 hot key, lub 1-9 numery też działają. \n\
-Naciśnij  on/off aby odchaczyć opcje. \n\n\
+Naciśnij spacje aby odchaczyć opcje. \n\n\
   Które paczki potrzebujesz ?"
 	pierwsza_t="Instaluj-dialog"
 	druga_t="Zainstalowany"
@@ -109,7 +111,7 @@ then
 			TERMINATOR FOR PACKAGE
 
 	Program complete missing packages for webcamstudio.
-This massage you will see just for ones if you didnt,
+This massage you will see just for ones if you didn't,
 choose option -m:
 
 ./terminator_for_wbs.sh -m
@@ -145,6 +147,8 @@ packages."
 	M1_opis_op2="Some missing packages"
 	M1_op3="Netbeans"
 	M1_opis_op3="Program IDE for programing in java"
+	M1_op4="Version"
+	M1_opis_op4="Java version , alternatives"
 	MYN1_info="Your choice is "
 	MYN1_tytul="Are you sure ?"
 	paczki="Packages check list"

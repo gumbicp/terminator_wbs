@@ -46,6 +46,7 @@ function func_java7_install {
 ##	Najnowsza java jest nam potrzebna do instalacji programu netbeans,
 ##	choć webcamstudio pracuje i skompilowany będzie na java-6-jdk.
 function func_java6_install {
+    clear
     sudo apt-get install openjdk-6-jdk openjdk-6-doc openjdk-6-source openjdk-6-jre
 }
 ##	Sprawdzamy wersje javy zainstalowane muszą sią zagadzać.
@@ -88,7 +89,11 @@ function func_restart {
 ##	-------- inne wymagane pakiety pakiety  -------
 #
 ##	Standart podany przez autora tej aplikacji.
-##	Build-Depends: debhelper (>= 7.2.7~), cdbs (>= 0.4.69~), dkms (>= 2.1.1.1), devscripts, bzip2, subversion, linux-headers-generic, ant, #	default-jdk, libappframework-java, libcommons-cli-java, libcommons-codec-java, libcommons-httpclient-java, libcommons-lang3-java, #	#	libjsr305-java, liblog4j1.2-java, libnb-absolutelayout-java, libnetty-java, libslf4j-java, libswingworker-java, junit
+##	Build-Depends: debhelper (>= 7.2.7~), cdbs (>= 0.4.69~), dkms (>= 2.1.1.1), devscripts,
+# bzip2, subversion, linux-headers-generic, ant, #	default-jdk, libappframework-java, libcommons-cli-java,
+# libcommons-codec-java, libcommons-httpclient-java, libcommons-lang3-java,
+#	#	libjsr305-java, liblog4j1.2-java, libnb-absolutelayout-java, libnetty-java, libslf4j-java, libswingworker-java,
+# junit
 function func_standart_wbs {
     sudo apt-get install debhelper
     sudo apt-get install cdbs
@@ -114,7 +119,8 @@ function func_autoremove {
     sudo apt-get autoremove
 }
 ##	--------------- FIREWALL -------------------
-##	Aby do jakiego kolwiek połączenia doszło ze stronami Bamusera czy Ustream trzeba otworzyć na zewnątrz port transmisji video
+##	Aby do jakiego kolwiek połączenia doszło ze stronami Bamusera czy Ustream
+# trzeba otworzyć na zewnątrz port transmisji video
 ##	 numer 1935 . A wię tak po kolei.
 ##	Odpalamy ufw nakładkę na firewall
 function func_ufw {
