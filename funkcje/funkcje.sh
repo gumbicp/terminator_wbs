@@ -33,7 +33,8 @@
 
 #** IMPORTS -VARIABLES **#
 . ./zmienne/zmienne.sh
-
+# funkcje instalacyjne
+. ./funkcje/paczki.sh
 ###
 # Function ends program
 # - clear screen
@@ -104,18 +105,141 @@ function func_help
 	read -p "<enter> : ..."
 	func_koniec
 }
+###
+# Funckcja dla wybranej opcji 1 z Main Menu
+##
+function func_M1_op1
+{
+$DIALOG --title " Pierwsza opcja" --clear \
+        --yesno "wybrales pierwsza opcje" 10 30
 
+case $? in
+  0)
+    echo "Yes chosen.";;
+  1)
+    echo "No chosen.";;
+  255)
+    echo "ESC pressed.";;
+esac
+}
+###
+# Funkcja dla wybranej opcji 2 z Main Menu
+# instaluj wybrane paczki
+##
+function func_M1_op2
+{
+    echo "func_M1_op2 ->> przed oknem dialog --checklist" >&4
+
+    test -f tfile && rm tfile || > tfile && t_file="tfile"
+   $DIALOG --backtitle "Ubuntu Lts 12.04 " --separate-output\
+	--title "$paczki" --clear \
+        --checklist "$CHB1_info" 20 61 5 \
+        "Ubuntu"  "ubuntu-restricted-extras" ON \
+        "Java7"    "No, that's not my dog." off \
+        "Orange" "Yeah, that's juicy." off \
+        "Chicken"    "Normally not a pet." off \
+        "Cat"    "No, never put a dog and a cat together!" off \
+        "Fish"   "Cats like fish." off \
+        "Lemon"  "You know how it tastes." off 2> $t_file
+
+retval=$?
+
+case $retval in
+  0)
+    for choice in `cat $t_file`; do
+        echo "Wartosc = $choice" >&4
+        if [ "$choice" = "Ubuntu" ]; then
+            func_ubuntu_restricted_extras
+            read -p "<enter>" enter
+        elif [ "$choice" = "Java7" ]; then
+            func_java7_install
+            read -p "<enter>" enter
+        fi
+    done
+    ;;
+  1)
+    echo "Cancel pressed.";;
+  255)
+    echo "ESC pressed.";;
+esac
+}
+function func_M1_op3
+{
+$DIALOG --title " Trzecia opcja" --clear \
+        --yesno "wybrales trzecia opcje" 10 30
+
+case $? in
+  0)
+    echo "Yes chosen.";;
+  1)
+    echo "No chosen.";;
+  255)
+    echo "ESC pressed.";;
+esac
+}
+###
+#   Funkcja otwiera okienko tak nie
+# pyta czy napewno wybor jest właściwy
+##
+function func_M_Menu_wybor
+{
+   $DIALOG --title "$MYN1_tytul " --clear \
+    --yesno "$MYN1_info $1" 5 35
+
+    case $? in
+      0)
+            echo "func_M_Menu_wybor-> przed if '$1 = $M1_op1" >&4
+           if [ "$1" = "$M1_op1" ]; then
+                echo "func_M_Menu_wybor-> if $1 = $M1_op1" >&4
+                func_M1_op1
+           elif [ "$1" = "$M1_op2" ]; then
+                echo "func_M_Menu_wybor if $1 = $M1_op2" >&4
+                func_M1_op2
+           elif [ "$1" = "$M1_op3"]; then
+                echo "func_M_Menu_wybor if $1 = $M1_op3" >&4
+                func_M1_op3
+	        fi
+	   ;;
+      1)
+        echo "func_M_Menu_wybor -> cancel -> func_start ...." >&4
+         func_start
+        ;;
+      255)
+        echo "func_M_Menu_wybor -> Esc -> func_start ...." >&4
+        func_start
+        ;;
+    esac
+}
 ### 
-# Funkcja startuje dialog
+# Funkcja startuje Main Menu  dialog
 #
 ##
 function func_start
 {
-    dialog --checklist "Odznacz pakiety do instalacji \n odznacz - spacja\n dół/góra - strzałki\n tab,enter " 15 35 5\
-    1 "Java 7" off\
-    2 "Java 6" off\
-    3 Netbeans off\
-    4 "Dodatki ubuntu" off\
+    $DIALOG --clear --title "Menu" \
+	--menu "$czolowka_menu\n\n" 20 50 4 \
+	"$M1_op1" "$M1_opis_op1" \
+	"$M1_op2" "$M1_opis_op2" \
+    "$M1_op3" "$M1_opis_op3" 2> $t_file
+
+   retval=$?
+   choice=`cat $t_file`
+
+   case $retval in
+       0)
+         func_M_Menu_wybor $choice
+	   ;;
+       1)
+           #cancel pressed
+           echo "func_start-> cancel pressed" >&4
+           func_koniec
+	   ;;
+       255)
+           #Esc
+           echo "func_start-> Esc pressed" >&4
+           func_koniec
+	   ;;
+   esac
 
     func_koniec
 }
@@ -198,7 +322,7 @@ function func_sprawdz_opcje
 		then
 			echo "-->f: func_sprawdz_opcje() -> f:func_start() " >&4
 			func_start
-		echo "-->f: func_sprawdz_opcje()->pentla przed 2-grugim elif czy -h = ${args[$i]}" >&4
+		echo "-->f: func_sprawdz_opcje()->pentla przed 2-drugim elif czy -h = ${args[$i]}" >&4
 		elif [ "${args[$i]}" = '-h' ]
 		then
 			echo "-->f: func_sprawdz_opcje() -> f:func_help() " >&4
@@ -239,7 +363,7 @@ function func_create_file_err
 }
 ###
 # Function for remove old logs 
-# when program start runnig.
+# when program start running.
 # v1.0
 ##
 function func_rm_logs

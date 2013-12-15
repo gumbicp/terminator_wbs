@@ -29,6 +29,11 @@
 err_log='err_log.txt'
 debug_log="debug_log.txt"
 
+#dla paczki dialog (grafika)
+DIALOG=${DIALOG=dialog}
+test -f tfile || > tfile && t_file="tfile"
+trap "rm -f $t_file" 0 1 2 5 15
+
 #-----------------------------------------------
 opcje=$#
 # dla menu tekstowego wersja polska
@@ -69,6 +74,25 @@ AUTOR
 VERSION
 	v 1.0.0 na linux ubuntu dla wbs
 "
+	czolowka_menu="
+  Witam , masz do wyboru pełną instalacje od zera
+lub doinstalowanie brakujacych pakietow."
+	M1_op1="Wszytko"
+	M1_opis_op1="Wszystkie pakiety od zera" 
+	M1_op2="Wybrane"
+	M1_opis_op2="Tylko wybrane pakiety"
+	M1_op3="Netbeans"
+	M1_opis_op3="Program IDE do programowania w java"
+	MYN1_info="Wybrales opcje "
+	MYN1_tytul="Jesteś tego pewny ?"
+	paczki="Lista paczek"
+	CHB1_info="Witam, jest to radiolist box.\n\
+Jeżeli jest wiecej opcji na ekranie, można ją \n\
+przesuwać w dół używając klawiszy UP/DOWN lub\n\
+strzałek , pierwsza litera jest tak zwanym \n\
+hot key, lub 1-9 numery też działają. \n\
+Naciśnij  on/off aby odchaczyć opcje. \n\n\
+  Które paczki potrzebujesz ?"
 	pierwsza_t="Instaluj-dialog"
 	druga_t="Zainstalowany"
 	koniec_t="Zamknij"
@@ -97,7 +121,7 @@ Program wont work if you dont have it installed !!!
 	"
 	pomoc="
 	
-	Options for user comands end synopsis:
+	Options for user commands end synopsis:
 
 ./terminator_for_wbs.sh [-h][-m][-en]
 
@@ -112,6 +136,25 @@ AUTOR
 VERSION
 	v 1.0.0 na linux ubuntu for wbs
 "
+	czolowka_menu="
+   Hi, you can install all or just some of missing
+packages."
+	M1_op1="All"
+	M1_opis_op1="Install all from zero" 
+	M1_op2="Choice"
+	M1_opis_op2="Some missing packages"
+	M1_op3="Netbeans"
+	M1_opis_op3="Program IDE for programing in java"
+	MYN1_info="Your choice is "
+	MYN1_tytul="Are you sure ?"
+	paczki="Packages check list"
+	CHB1_info="Hi, this is a radiolist box. \n\
+If there are more items than can fit on the \n\
+screen, the list will be scrolled. You can use the \n\
+UP/DOWN arrow keys, the first letter of the choice as a \n\
+hot key, or the number keys 1-9 to choose an option. \n\
+Press SPACE to toggle an option on/off. \n\n\
+  Which packages you need ?"
 	pierwsza_t="Install-dialog"
 	druga_t="Installed"
 	koniec_t="Close"
