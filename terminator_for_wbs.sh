@@ -32,7 +32,7 @@
 #                                                                       #
 #########################################################################
 
-#@TODO: dopisac opisy funkci w 2 jezkach 
+#TODO: dopisac opisy funkci w 2 jezkach
 
 ###
 # Funkcja ustawia wersje jezykową programu np -en po angielsku
@@ -56,7 +56,7 @@ function func_en_pl
 		fi
 	done
 }
-# ustaw wersje jezykowa
+### ustaw wersje jezykowa
 func_en_pl $@
 #--------- zmienne globalne ------------------
 . ./zmienne/zmienne.sh
@@ -72,19 +72,20 @@ func_en_pl $@
 # ---------------- Start skryptu  ------------
 # --------------------------------------------
 
-#czyszczenie plikow logow 
+###czyszczenie plikow logow
 func_rm_logs $err_log $debug_log
-# deskryptory dla nich
+### deskryptory dla nich
 exec 4<> $debug_log
-exec 3<> $err_log 
-# wpisanie czolowek do logow
+exec 3<> $err_log
+2>&3
+### wpisanie czolowek do logow
 func_create_file_debug
 func_create_file_err
-#
+###
 # glówny warunek rozruchowy programu
 # jezeli brak opcji to startuje opis i menu tekstowe
-#TODO: rożne opcje rozruchowe jeżeli bedą potrzebne
 #
+##
 if [ $opcje = 0 ]
 then
     func_pentla_textowa

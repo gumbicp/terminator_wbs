@@ -45,6 +45,7 @@
 ##
 function func_end
 {
+    echo ":: funkcje.sh :: func_end ::" >&4
 	clear
     echo
     echo
@@ -68,6 +69,7 @@ function func_end
 ##
 function func_koniec
 {
+    echo ":: funkcje.sh :: func_koniec ::" >&4
 	if [ "$language" = "-en" ]
 	then
 		func_end
@@ -100,6 +102,7 @@ function func_koniec
 ##
 function func_help
 {
+    echo ":: funkcje.sh :: func_help" >&4
 	clear
 	echo "$pomoc"
 	read -p "<enter> : ..."
@@ -108,33 +111,83 @@ function func_help
 ### --- dialog
 # Funckcja wybiera wszystkie paczki i instaluje z automatu
 ##
+#@TODO implementacja funkcji
 function func_M1_op1
 {
-$DIALOG --title " Pierwsza opcja" --clear \
-        --yesno "wybrales pierwsza opcje" 10 30
+    echo ":: funkcje.sh :: func_M1_op1" >&4
+    $DIALOG --title " Pierwsza opcja" --clear \
+            --yesno "wybrales pierwsza opcje" 10 30
+
+    case $? in
+        0)
+        echo "Yes chosen.";;
+        1)
+        echo "No chosen.";;
+        255)
+echo "ESC pressed.";;
+    esac
+}
+### --- dialog
+#   Funkcja box tekstowy wyświetlajacy info
+# w temacie instalacji po restarcie systemu
+##
+function func_ifo_instalacji {
+echo ":: funkcje.sh :: func_ifo_instalacji" >&4
+tfile1="tfile1"
+cat << EOF > $tfile1
+
+PGDN/SPACE     - Move down one page
+PGUP/'b'       - Move up one page
+ENTER/DOWN/'j' - Move down one line
+UP/'k'         - Move up one line
+LEFT/'h'       - Scroll left
+RIGHT/'l'      - Scroll right
+'0'            - Move to beginning of line
+HOME/'g'       - Move to beginning of file
+END/'G'        - Move to end of file
+'/'            - Forward search
+'?'            - Backward search
+'n'            - Repeat last search (forward)
+'N'            - Repeat last search (backward)
+
+
+EOF
+
+TEXT="$PWD/funkcje/.info_instalacji.txt"
+echo "$PWD" >&4
+test -f $TEXT || TEXT=../COPYING
+
+cat $TEXT | expand >> $tfile1
+
+$DIALOG --clear --title "TEXT BOX" --textbox "$tfile1" 22 77
 
 case $? in
   0)
-    echo "Yes chosen.";;
-  1)
-    echo "No chosen.";;
+    echo "OK" >&4
+    rm -f "$tfile1"
+    return 0
+    ;;
   255)
-    echo "ESC pressed.";;
+    echo "ESC pressed." >&4
+    rm -f "$tfile1"
+    return 0
+    ;;
 esac
 }
 ### --- dialog
 # Funkcja dla wybranej opcji 2 z Main Menu
 # instaluj wybrane paczki
 ##
+#@TODO Devscripts Codecs
 function func_M1_op2
 {
-    echo ":: func_M1_op2 ->> przed oknem dialog --checklist ::" >&4
+    echo ":: funkcje.sh :: func_M1_op2 ->> przed oknem dialog --checklist ::" >&4
 
     test -f tfile && rm tfile || > tfile && t_file="tfile"
    $DIALOG --backtitle "Ubuntu Lts 12.04 " --separate-output\
 	--title "$paczki" --clear \
         --checklist "$CHB1_info" 20 61 5 \
-        "Ubuntu"  "ubuntu-restricted-extras" ON \
+        "Ubuntu"  "ubuntu-restricted-extras" off \
         "Java7"  "openjdk-7-jdk"  off \
         "Java6"  "openjdk-6-jdk"  off \
         "Ant"    "Compiler for java"  off \
@@ -159,6 +212,17 @@ case $retval in
             elif [ "$choice" = "Java6" ]; then
                 func_java6_install
                 read -p "<enter>" enter
+            elif [ "$choice" = "Ant" ]; then
+                func_ant
+                read -p "<enter>" enter
+            elif [ "$choice" = "Dkms" ]; then
+                if test -e .resztainstalacji; then
+                    func_ifo_instalacji
+                else
+                    func_standart_wbs
+                    read -p "<enter>" enter
+                fi
+
             fi
         done
         ;;
@@ -179,6 +243,7 @@ func_start
 ##
 function func_M1_op3
 {
+    echo ":: funkcje.sh :: func_M1_op3 ::" >&4
 $DIALOG --title " Trzecia opcja" --clear \
         --yesno "wybrales trzecia opcje" 10 30
 
@@ -197,19 +262,9 @@ esac
 ##
 function func_M1_op4
 {
+    echo ":: funkcje.sh :: func_M1_op4 (->func_java_version)::" >&4
     func_java_version
     func_start
-#$DIALOG --title " Czwarta opcja" --clear \
-#        --yesno "wybrales czwarta opcje" 10 30
-#
-#case $? in
-#  0)
-#    echo "Yes chosen.";;
-#  1)
-#    echo "No chosen.";;
-#  255)
-#    echo "ESC pressed.";;
-#esac
 }
 ### --- dialog
 #   Funkcja otwiera okienko tak nie
@@ -217,12 +272,12 @@ function func_M1_op4
 ##
 function func_M_Menu_wybor
 {
-    $DIALOG --title "$MYN1_tytul " --clear \
-    --yesno "$MYN1_info $1" 5 35
+#    $DIALOG --title "$MYN1_tytul " --clear \
+#    --yesno "$MYN1_info $1" 5 35
 
     case $? in
         0)
-            echo ":: func_M_Menu_wybor-> przed if '$1 = $M1_op1 ::" >&4
+            echo ":: funkcje.sh :: func_M_Menu_wybor-> przed if '$1 = $M1_op1 ::" >&4
             #wszystko na raz
             if [ "$1" = "$M1_op1" ]; then
                 echo "f --> in if $1 = $M1_op1" >&4
@@ -246,11 +301,11 @@ function func_M_Menu_wybor
             ;;
         1)
             echo "f --> cancel -> func_start ...." >&4
-            func_start
+            return 0
             ;;
         255)
             echo "f --> Esc -> func_start ...." >&4
-            func_start
+            return 0
             ;;
     esac
     echo ":::: func_M_Menu_wybor--> end } ::::" >&4
@@ -261,6 +316,7 @@ function func_M_Menu_wybor
 ##
 function func_start
 {
+    echo ":: funkcje.sh :: func_start ::" >&4
     $DIALOG --clear --title "Menu" \
 	--menu "$czolowka_menu\n\n" 20 55 4 \
 	"$M1_op1" "$M1_opis_op1" \
@@ -277,12 +333,12 @@ function func_start
 	   ;;
        1)
            #cancel pressed
-           echo "func_start-> cancel pressed" >&4
+           echo "f -> cancel pressed" >&4
            func_koniec
 	   ;;
        255)
            #Esc
-           echo "func_start-> Esc pressed" >&4
+           echo "f -> Esc pressed" >&4
            func_koniec
 	   ;;
    esac
@@ -302,8 +358,10 @@ function func_start
 ##
 function func_install_dialog
 {
+    echo ":: funkcje.sh :: func_install_dialog ::" >&4
     sudo apt-get update
     sudo apt-get install dialog
+    read -p "<enter>" enter
     func_start
 }
 ###
@@ -318,6 +376,7 @@ function func_install_dialog
 ##
 function func_pentla_textowa
 {
+    echo ":: funkcje.sh :: func_pentla_textowa ::" >&4
 	while [ True ]
     do
 	clear
@@ -349,7 +408,7 @@ function func_sprawdz_opcje
 {
 	#----------- debug
 	echo ":: --------------------------------------------- ::" >&4
-	echo ":: plik funkcje.sh -- funkcja -> sprawdz_opcje()   ::" >&4
+	echo ":: funkcje.sh -- funkcja -> sprawdz_opcje()   ::" >&4
 	#----------- end debug
 	local arg1=$1
 	local arg2=$2
@@ -414,6 +473,7 @@ function func_create_file_err
 ##
 function func_rm_logs
 {
+    echo ":: funkcje.sh :: func_rm_logs ::" >&4
 	if [ -e "$1" ]
 	then
 		rm -v "$1"

@@ -24,6 +24,7 @@
 #	Pierwsze co musimy zainstalować:
 #	Ctrl+Alt+t skr. do terminalu
 function func_ubuntu_restricted_extras {
+    echo ":: paczki.sh :: func_ubuntu_restricted_extras ::" >&4
     clear
     sudo apt-get install ubuntu-restricted-extras
 }
@@ -40,12 +41,14 @@ function func_ubuntu_restricted_extras {
 
 ##	-------- java -------
 function func_java7_install {
+    echo ":: paczki.sh :: func_java7_install ::" >&4
     clear
     sudo apt-get install openjdk-7-jdk openjdk-7-doc openjdk-7-source openjdk-7-jre
 }
 ##	Najnowsza java jest nam potrzebna do instalacji programu netbeans,
 ##	choć webcamstudio pracuje i skompilowany będzie na java-6-jdk.
 function func_java6_install {
+    echo ":: paczki.sh :: func_java6_install ::" >&4
     clear
     sudo apt-get install openjdk-6-jdk openjdk-6-doc openjdk-6-source openjdk-6-jre
 }
@@ -53,13 +56,18 @@ function func_java6_install {
 #
 ##	Jeżeli wersje się nie zgadzaja to musimy ustawić alternatives java, lub ustawiona jest wersja 7 to przestawiamy na wersje 6
 function func_up_alt_java {
+    echo ":: paczki.sh :: func_up_alt_java ::" >&4
+    echo
     sudo update-alternatives --config java
+    echo
     sudo update-alternatives --config javac
+    echo ":: paczki.sh :: func_up_alt_java ->> end }::" >&4
 }
 ###
 # Funkcja yes_no
 ##
 function func_ask {
+    echo ":: paczki.sh :: func_ask ::" >&4
     while true; do
         if [ "${2:-}" = "Y" ]; then
             prompt="Y/n"
@@ -71,56 +79,77 @@ function func_ask {
             prompt="y/n"
             default=
         fi
-        # Ask the question
+
         read -p "$1 [$prompt] " REPLY
-        # Default?
+
         if [ -z "$REPLY" ]; then
             REPLY=$default
         fi
-        # Check if the reply is valid
+
         case "$REPLY" in
             Y*|y*) return 0 ;;
             N*|n*) return 1 ;;
         esac
     done
+    echo ":: paczki.sh :: func_ask ->> end }::" >&4
 }
+###
+#
+##
 function func_java_version {
+    echo ":: paczki.sh :: func_java_version ::" >&4
     clear
     java -version
     javac -version
 
     if func_ask "$java_version_info" Y; then
-        echo "tak"
+        return 0
     else
-        echo "nie"
+        func_up_alt_java
     fi
-
+    echo ":: paczki.sh :: func_java_version  end ->> }::" >&4
 }
-
-##	-------------- ant ---------------
-##	Jest to kompilator java.
+###
+#   Funkcja instaluje :
+#	-------------- ant ---------------
+#	Jest to kompilator java.
+##
 function func_ant {
+    echo ":: paczki.sh :: func_ant ::" >&4
+    clear
     sudo apt-get install ant
 }
+###
+#   Funkcja zapisuje plik .resztainstalacji
+##
 function func_dodaj_pozostale_do_instalacji
 {
+    echo ":: paczki.sh :: func_dodaj_pozostale_do_instalacji ::" >&4
     test -f .resztainstalacji || > .resztainstalacji
     echo "func_standart_wbs" >> .resztainstalacji
     echo "func_reszta_pakietow" >> .resztainstalacji
-    func_kodeki
-    func_autoremove
-    func_ufw
+    echo "func_kodeki" >> .resztainstalacji
+    echo "func_autoremove" >> .resztainstalacji
+    echo "func_ufw" >> .resztainstalacji
 }
+###
+#   Funkcja restartuje program
+#   po dkms
+#   i -> func_dodaj_pozostale_do_instalacji()
+##
 function func_restart {
+    echo ":: paczki.sh :: func_restart ::" >&4
+
     $DIALOG --title "Restart ?" --clear \
 	--yesno "We need restart system <y/n>" 5 30
     case $? in
 	0)
+	    func_dodaj_pozostale_do_instalacji
 	    sudo shutdown -r 0 ;;
 	1)
-	    > .resztainstalacji ;;
+	   func_dodaj_pozostale_do_instalacji ;;
 	255)
-	    > .resztainstalacji ;;
+	   func_dodaj_pozostale_do_instalacji ;;
     esac
 }
 ##	-------- inne wymagane pakiety pakiety  -------
@@ -131,28 +160,53 @@ function func_restart {
 # libcommons-codec-java, libcommons-httpclient-java, libcommons-lang3-java,
 #	#	libjsr305-java, liblog4j1.2-java, libnb-absolutelayout-java, libnetty-java, libslf4j-java, libswingworker-java,
 # junit
+# ------------------------------------------------------
+
+###
+#   Funkcja instaluje :
+#   - debhelper
+#   - cdbs
+#   - dkms
+# i -> func_restart()
+##
 function func_standart_wbs {
+    echo ":: paczki.sh :: func_standart_wbs ::" >&4
+
+    clear
     sudo apt-get install debhelper
     sudo apt-get install cdbs
     sudo apt-get install dkms
     echo
     echo
-
+    read -p "<enter>" enter
+    func_restart
+    clear
 }
 ##	Po dkms restartujemy system.
+#----------------------------------------------------------
+
+###
 #
+##
 function func_reszta_pakietow {
+    echo ":: paczki.sh :: func_reszta_pakietow ::" >&4
+    clear
     sudo apt-get install devscripts bzip2 subversion linux-headers-generic default-jdk libappframework-java libcommons-cli-java libcommons-codec-java libcommons-httpclient-java libcommons-lang3-java libjsr305-java liblog4j1.2-java libnb-absolutelayout-java libnetty-java libslf4j-java libswingworker-java junit ffmpeg
 }
-##	Bez tych dwóch nie uda wam się puścić stream na zewnątrz.
-#
+###
+#   Bez tych dwóch nie uda wam się puścić stream na zewnątrz.
+##
 function func_kodeki {
+    echo ":: paczki.sh :: func_kodeki ::" >&4
+    clear
     sudo apt-get install libavformat-extra*
     sudo apt-get install libavcodec-extra*
 }
 ##	I na koniec
 #
 function func_autoremove {
+    echo ":: paczki.sh :: func_autoremove ::" >&4
+    clear
     sudo apt-get autoremove
 }
 ##	--------------- FIREWALL -------------------
@@ -161,6 +215,8 @@ function func_autoremove {
 ##	 numer 1935 . A wię tak po kolei.
 ##	Odpalamy ufw nakładkę na firewall
 function func_ufw {
+    echo ":: paczki.sh :: func_ufw ::" >&4
+    clear
     sudo ufw enable
     sudo ufw allow out 1935/tcp
     sudo ufw allow out 1935/udp
@@ -168,6 +224,7 @@ function func_ufw {
 ##	Restart systemu dla pełnej aktywacji ufw i sprawdzamy stan
 function func_ufw_status
 {
+echo ":: paczki.sh :: func_ufw_status ::" >&4
 clear
 cat << EOF
 	Wynik powinien być tego typu:

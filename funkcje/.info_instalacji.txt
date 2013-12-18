@@ -1,0 +1,6 @@
+    Hi, If you see this file , my program installed dkms packages
+end you restarted system. So in option install All this packages
+will be skip.
+
+   If you don`t have installed dkms (?system installation error?)
+or other reason .. remove file in terminator_wbs/.resztainstalacji

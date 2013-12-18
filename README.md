@@ -1,3 +1,5 @@
+!! UNDER CONSTRUCTION !! --- NOT WORKING YET...
+
 Hi, for start program first thing you have to do is :
 
 $ chmod -v +x *.sh ./*/*.sh
