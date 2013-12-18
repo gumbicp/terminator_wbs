@@ -100,7 +100,13 @@ Naciśnij spacje aby odchaczyć opcje. \n\n\
 	koniec_t="Zamknij"
 	tab_menu_start=("$pierwsza_t" "$druga_t" "$koniec_t")
 	dl_tms=${#tab_menu_start[@]}
-	
+#for file paczki.sh
+    java_version_info="Java i Javac wersje są takie same ?!"
+    yes=("T"  "Ta" "Tak" "t" "ta" "tak")
+    no=("N" "Ni" "Nie" "n" "ni" "nie")
+    YES_NO="<Tak/Nie>"
+    ANSWER_COMPLAIN="\nTak lub Nie, prosze !\n"
+
 # zmienne dla wersji angielskiej
 elif [ "$language" = "-en" ]
 then
@@ -141,6 +147,7 @@ VERSION
 	czolowka_menu="
    Hi, you can install all or just some of missing
 packages."
+# for func start and func_M_Menu_wybor
 	M1_op1="All"
 	M1_opis_op1="Install all from zero" 
 	M1_op2="Choice"
@@ -164,4 +171,11 @@ Press SPACE to toggle an option on/off. \n\n\
 	koniec_t="Close"
 	tab_menu_start=("$pierwsza_t" "$druga_t" "$koniec_t")
 	dl_tms=${#tab_menu_start[@]}
+
+#for file paczki.sh
+    java_version_info="Java and Javac version are the same ?!"
+    yes=("Y"  "Ye" "Yes"  "y" "ye" "yes")
+    no=("N" "No" "n" "no" "nope" "nop")
+    YES_NO="<Yes/No>"
+    ANSWER_COMPLAIN="\nYes or No, please !\n"
 fi

@@ -145,29 +145,33 @@ function func_M1_op2
 retval=$?
 
 case $retval in
-  0)
-    for choice in `cat $t_file`; do
-        #debug
-        echo "f -> Wartosc = $choice" >&4
-        #end debug
-        if [ "$choice" = "Ubuntu" ]; then
-            func_ubuntu_restricted_extras
-            read -p "<enter>" enter
-        elif [ "$choice" = "Java7" ]; then
-            func_java7_install
-            read -p "<enter>" enter
-        fi
-    done
-    ;;
-  1)
-    echo "f --> Cancel pressed -> func_start" >&4
-    func_start
-    ;;
-  255)
-    echo "f --> ESC pressed. -> func_start" >&4
-    func_start
+    0)
+        for choice in `cat $t_file`; do
+            #debug
+            echo "f -> Wartosc = $choice" >&4
+            #end debug
+            if [ "$choice" = "Ubuntu" ]; then
+                func_ubuntu_restricted_extras
+                read -p "<enter>" enter
+            elif [ "$choice" = "Java7" ]; then
+                func_java7_install
+                read -p "<enter>" enter
+            elif [ "$choice" = "Java6" ]; then
+                func_java6_install
+                read -p "<enter>" enter
+            fi
+        done
+        ;;
+    1)
+        echo "f --> Cancel pressed -> func_start" >&4
+        func_start
+        ;;
+    255)
+        echo "f --> ESC pressed. -> func_start" >&4
+        func_start
     ;;
 esac
+func_start
 }
 ### --- dialog
 #   Funkcja informacyjna o programie netbeans
@@ -193,17 +197,19 @@ esac
 ##
 function func_M1_op4
 {
-$DIALOG --title " Czwarta opcja" --clear \
-        --yesno "wybrales czwarta opcje" 10 30
-
-case $? in
-  0)
-    echo "Yes chosen.";;
-  1)
-    echo "No chosen.";;
-  255)
-    echo "ESC pressed.";;
-esac
+    func_java_version
+    func_start
+#$DIALOG --title " Czwarta opcja" --clear \
+#        --yesno "wybrales czwarta opcje" 10 30
+#
+#case $? in
+#  0)
+#    echo "Yes chosen.";;
+#  1)
+#    echo "No chosen.";;
+#  255)
+#    echo "ESC pressed.";;
+#esac
 }
 ### --- dialog
 #   Funkcja otwiera okienko tak nie
@@ -211,35 +217,43 @@ esac
 ##
 function func_M_Menu_wybor
 {
-   $DIALOG --title "$MYN1_tytul " --clear \
+    $DIALOG --title "$MYN1_tytul " --clear \
     --yesno "$MYN1_info $1" 5 35
 
     case $? in
-      0)
+        0)
             echo ":: func_M_Menu_wybor-> przed if '$1 = $M1_op1 ::" >&4
-           if [ "$1" = "$M1_op1" ]; then
-                echo "f --> if $1 = $M1_op1" >&4
+            #wszystko na raz
+            if [ "$1" = "$M1_op1" ]; then
+                echo "f --> in if $1 = $M1_op1" >&4
                 func_M1_op1
-           elif [ "$1" = "$M1_op2" ]; then
-                echo "f --> if $1 = $M1_op2" >&4
+            echo "f --> przed elif '$1 = $M1_op2 ::" >&4
+            #wybrane paczki
+            elif [ "$1" = "$M1_op2" ]; then
+                echo "f --> in elif $1 = $M1_op2" >&4
                 func_M1_op2
-           elif [ "$1" = "$M1_op3" ]; then
-                echo "f --> if $1 = $M1_op3" >&4
+            echo "f --> przed elif '$1 = $M1_op3 ::" >&4
+            #netbeans
+            elif [ "$1" = "$M1_op3" ]; then
+                echo "f --> in elif $1 = $M1_op3" >&4
                 func_M1_op3
-           elif [ "$1" = "$M1_op4" ]; then
-                echo "f --> if $1 = $M1_op4" >&4
+            echo "f --> przed elif '$1 = $M1_op4 ::" >&4
+            #versions Java
+            elif [ "$1" = "$M1_op4" ]; then
+                echo "f --> in elif $1 = $M1_op4" >&4
                 func_M1_op4
-	        fi
-	   ;;
-      1)
-        echo "f --> cancel -> func_start ...." >&4
-         func_start
-        ;;
-      255)
-        echo "f --> Esc -> func_start ...." >&4
-        func_start
-        ;;
+            fi
+            ;;
+        1)
+            echo "f --> cancel -> func_start ...." >&4
+            func_start
+            ;;
+        255)
+            echo "f --> Esc -> func_start ...." >&4
+            func_start
+            ;;
     esac
+    echo ":::: func_M_Menu_wybor--> end } ::::" >&4
 }
 ### --- dialog
 # Funkcja startuje Main Menu  dialog

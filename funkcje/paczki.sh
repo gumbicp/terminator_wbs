@@ -51,15 +51,52 @@ function func_java6_install {
 }
 ##	Sprawdzamy wersje javy zainstalowane muszą sią zagadzać.
 #
-function func_java_version {
-    java -version
-    javac -version
-}
 ##	Jeżeli wersje się nie zgadzaja to musimy ustawić alternatives java, lub ustawiona jest wersja 7 to przestawiamy na wersje 6
 function func_up_alt_java {
     sudo update-alternatives --config java
     sudo update-alternatives --config javac
 }
+###
+# Funkcja yes_no
+##
+function func_ask {
+    while true; do
+        if [ "${2:-}" = "Y" ]; then
+            prompt="Y/n"
+            default=Y
+        elif [ "${2:-}" = "N" ]; then
+            prompt="y/N"
+            default=N
+        else
+            prompt="y/n"
+            default=
+        fi
+        # Ask the question
+        read -p "$1 [$prompt] " REPLY
+        # Default?
+        if [ -z "$REPLY" ]; then
+            REPLY=$default
+        fi
+        # Check if the reply is valid
+        case "$REPLY" in
+            Y*|y*) return 0 ;;
+            N*|n*) return 1 ;;
+        esac
+    done
+}
+function func_java_version {
+    clear
+    java -version
+    javac -version
+
+    if func_ask "$java_version_info" Y; then
+        echo "tak"
+    else
+        echo "nie"
+    fi
+
+}
+
 ##	-------------- ant ---------------
 ##	Jest to kompilator java.
 function func_ant {
